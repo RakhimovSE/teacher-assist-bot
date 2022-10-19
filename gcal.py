@@ -41,24 +41,24 @@ class GCal:
 
     @staticmethod
     def __auth() -> Credentials:
-        _creds = None
+        creds = None
         # The file token.json stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
         if os.path.exists(env['GCAL_TOKEN_FILE']):
-            _creds = Credentials.from_authorized_user_file(env['GCAL_TOKEN_FILE'], GCal.SCOPES)
+            creds = Credentials.from_authorized_user_file(env['GCAL_TOKEN_FILE'], GCal.SCOPES)
         # If there are no (valid) credentials available, let the user log in.
-        if not _creds or not _creds.valid:
-            if _creds and _creds.expired and _creds.refresh_token:
-                _creds.refresh(Request())
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
                     env['GCAL_CREDS_FILE'], GCal.SCOPES)
-                _creds = flow.run_local_server(port=0)
+                creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
             with open(env['GCAL_TOKEN_FILE'], 'w') as token:
-                token.write(_creds.to_json())
-        return _creds
+                token.write(creds.to_json())
+        return creds
 
 
 if __name__ == '__main__':
