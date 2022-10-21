@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import datetime
 import os.path
+import re
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -11,6 +12,11 @@ from googleapiclient.errors import HttpError
 from dotenv import dotenv_values
 
 env = dotenv_values()
+
+
+def is_match(text, pattern=r'^[A-Za-z_][0-9A-Za-z_]*$'):
+    """Check if variable has proper naming convention"""
+    return bool(re.compile(pattern).search(text))
 
 
 class GCal:
