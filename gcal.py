@@ -31,6 +31,15 @@ class GCal:
         """Shows basic usage of the Google Calendar API.
         Prints the start and name of the next 10 events on the user's calendar.
         """
+        def get_event_args(event: dict):
+            args = {}
+            lines = event.get('description', '').split('\n')
+            for line in lines:
+                parts = line.split('=')
+                if len(parts) == 2 and is_match(parts[0]):
+                    args[parts[0]] = parts[1]
+            return args
+
         try:
             # Call the Calendar API
             now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
@@ -39,7 +48,10 @@ class GCal:
                                                          maxResults=self.max_results,
                                                          singleEvents=True,
                                                          orderBy='startTime').execute()
-            return events_result.get('items', [])
+            events = events_result.get('items', [])
+            for event in events:
+                event['args'] = get_event_args(event)
+            return events
 
         except HttpError as error:
             print('An error occurred: %s' % error)
