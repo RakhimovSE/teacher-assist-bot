@@ -14,7 +14,7 @@ env = dotenv_values()
 
 
 class GCal:
-    SCOPES = env['GCAL_SCOPES'].split(';')
+    SCOPES = env['GCAL_SCOPES'].split(',')
 
     def __init__(self, max_results=10):
         self.max_results = max_results
