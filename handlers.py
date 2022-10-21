@@ -1,9 +1,17 @@
-from telegram import ForceReply, Update
+import asyncio
+
+from telegram import Update
 from telegram.ext import ContextTypes
+from telegram.constants import ParseMode
+from ptbcontrib.roles import BOT_DATA_KEY
 
 from gcal import GCal
 
 gcal = GCal()
+
+
+def get_admin_ids(context: ContextTypes.DEFAULT_TYPE) -> list[int]:
+    return context.bot_data[BOT_DATA_KEY].admins.chat_ids
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -11,9 +19,20 @@ gcal = GCal()
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
-    await update.message.reply_html(
-        rf"Hi {user.mention_html()}!",
-        reply_markup=ForceReply(selective=True),
+    await update.message.reply_html(f'Hi {user.mention_html()}!')
+
+    admin_ids = get_admin_ids(context)
+    if user.id in admin_ids:
+        return
+
+    new_user_text = f'{user.mention_html()} (id={user.id}) joined bot'
+    context.application.create_task(
+        asyncio.gather(
+            *(
+                context.bot.send_message(admin_id, new_user_text, parse_mode=ParseMode.HTML)
+                for admin_id in admin_ids
+            )
+        )
     )
 
 
