@@ -40,3 +40,7 @@ async def events(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         start = event['start'].get('dateTime', event['start'].get('date'))
         events_formatted.append(f'{start} {event["summary"]}')
     await update.message.reply_text('\n'.join(events_formatted))
+
+
+async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text('Ты админ')

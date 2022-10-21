@@ -34,6 +34,7 @@ if __version_info__ < (20, 0, 0, "alpha", 1):
         f"visit https://docs.python-telegram-bot.org/en/v{TG_VER}/examples.html"
     )
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from ptbcontrib.roles import setup_roles, RolesHandler
 
 env = dotenv_values()
 # Enable logging
@@ -48,10 +49,15 @@ def main() -> None:
     # Create the Application and pass it your bot's token.
     application = Application.builder().token(env["TG_TOKEN"]).build()
 
+    roles = setup_roles(application)
+    roles.add_admin([int(admin_id) for admin_id in env["TG_ADMIN_IDS"].split(',')])
+
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("start", handlers.start))
     application.add_handler(CommandHandler("help", handlers.help_command))
     application.add_handler(CommandHandler("events", handlers.events))
+    application.add_handler(
+        RolesHandler(CommandHandler("admin", handlers.admin), roles=roles.admins))
 
     # on non command i.e message - echo the message on Telegram
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handlers.echo))
