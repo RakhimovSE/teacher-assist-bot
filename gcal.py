@@ -16,7 +16,7 @@ env = dotenv_values()
 
 def is_match(text, pattern=r'^[A-Za-z_][0-9A-Za-z_]*$'):
     """Check if variable has proper naming convention"""
-    return bool(re.compile(pattern).search(text))
+    return bool(re.search(pattern, text))
 
 
 class GCal:
