@@ -27,11 +27,11 @@ try:
 except ImportError:
     __version_info__ = (0, 0, 0, 0, 0)  # type: ignore[assignment]
 
-if __version_info__ < (20, 0, 0, "alpha", 1):
+if __version_info__ < (20, 0, 0, 'alpha', 1):
     raise RuntimeError(
-        f"This example is not compatible with your current PTB version {TG_VER}. To view the "
-        f"{TG_VER} version of this example, "
-        f"visit https://docs.python-telegram-bot.org/en/v{TG_VER}/examples.html"
+        f'This example is not compatible with your current PTB version {TG_VER}. To view the '
+        f'{TG_VER} version of this example, '
+        f'visit https://docs.python-telegram-bot.org/en/v{TG_VER}/examples.html'
     )
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from ptbcontrib.roles import setup_roles, RolesHandler
@@ -39,7 +39,7 @@ from ptbcontrib.roles import setup_roles, RolesHandler
 env = dotenv_values()
 # Enable logging
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
@@ -47,17 +47,17 @@ logger = logging.getLogger(__name__)
 def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token.
-    application = Application.builder().token(env["TG_TOKEN"]).build()
+    application = Application.builder().token(env['TG_TOKEN']).build()
 
     roles = setup_roles(application)
-    roles.add_admin([int(admin_id) for admin_id in env["TG_ADMIN_IDS"].split(',')])
+    roles.add_admin([int(admin_id) for admin_id in env['TG_ADMIN_IDS'].split(',')])
 
     # on different commands - answer in Telegram
-    application.add_handler(CommandHandler("start", handlers.start))
-    application.add_handler(CommandHandler("help", handlers.help_command))
-    application.add_handler(CommandHandler("events", handlers.events))
+    application.add_handler(CommandHandler('start', handlers.start))
+    application.add_handler(CommandHandler('help', handlers.help_command))
+    application.add_handler(CommandHandler('events', handlers.events))
     application.add_handler(
-        RolesHandler(CommandHandler("admin", handlers.admin), roles=roles.admins))
+        RolesHandler(CommandHandler('admin', handlers.admin), roles=roles.admins))
 
     # on non command i.e message - echo the message on Telegram
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handlers.echo))
@@ -66,5 +66,5 @@ def main() -> None:
     application.run_polling()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
