@@ -22,12 +22,11 @@ def is_match(text, pattern=r'^[A-Za-z_][0-9A-Za-z_]*$'):
 class GCal:
     SCOPES = env['GCAL_SCOPES'].split(',')
 
-    def __init__(self, max_results=10):
-        self.max_results = max_results
+    def __init__(self):
         self.__creds = GCal.__auth()
         self.__service = build('calendar', 'v3', credentials=self.__creds)
 
-    def get_next_events(self):
+    def get_next_events(self, max_results=10):
         """Shows basic usage of the Google Calendar API.
         Prints the start and name of the next 10 events on the user's calendar.
         """
@@ -45,7 +44,7 @@ class GCal:
             now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
             print('Getting the upcoming 10 events')
             events_result = self.__service.events().list(calendarId=env['GCAL_ID'], timeMin=now,
-                                                         maxResults=self.max_results,
+                                                         maxResults=max_results,
                                                          singleEvents=True,
                                                          orderBy='startTime').execute()
             events = events_result.get('items', [])
