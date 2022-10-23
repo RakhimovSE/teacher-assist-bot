@@ -1,9 +1,13 @@
 import asyncio
+from typing import Union
 
+import telegram.error
 from telegram import Update
 from telegram.ext import ContextTypes
-from telegram.constants import ParseMode
+from telegram.constants import ParseMode, ChatAction
 from ptbcontrib.roles import BOT_DATA_KEY
+from datetime import datetime, timezone, timedelta
+from dateutil import parser
 
 from gcal import GCal
 
@@ -46,19 +50,39 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(update.message.text)
 
 
-async def events(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    events = gcal.get_next_events()
+async def send_reminders(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    async def send_reminder(_class: dict) -> Union[str, None]:
+        if 'telegram_id' not in _class['args']:
+            return None
 
-    if not events:
-        await update.message.reply_text('No upcoming events found.')
+        now = datetime.now(timezone.utc)
+        class_start = parser.parse(_class['start'].get('dateTime', _class['start'].get('date')))
+        if class_start - now > timedelta(days=1):
+            return None
+
+        class_end = parser.parse(_class['end'].get('dateTime', _class['end'].get('date')))
+
+        text = f'Привет!\nНапоминаю о занятии {class_start.strftime("%d.%m")} с ' \
+               f'{class_start.strftime("%H:%M")} до {class_end.strftime("%H:%M")}. Всё в силе?'
+        try:
+            await context.bot.send_message(_class['args']['telegram_id'], text)
+            return f'"{_class["summary"]}": успешно'
+        except telegram.error.BadRequest as ex:
+            return f'"{_class["summary"]}": ошибка ({ex.message})'
+
+    await update.message.reply_chat_action(ChatAction.TYPING)
+    NO_NEW_CLASSES = 'В ближайшее время занятий нет'
+
+    classes = gcal.get_next_events()
+
+    if not classes:
+        await update.message.reply_text(NO_NEW_CLASSES)
         return
 
-    events_formatted = []
-    # Prints the start and name of the next 10 events
-    for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        events_formatted.append(f'{start} {event["summary"]}')
-    await update.message.reply_text('\n'.join(events_formatted))
+    reminder_jobs = (send_reminder(_class) for _class in classes)
+    notify_responses = [res for res in await asyncio.gather(*reminder_jobs) if res]
+    await update.message.reply_text(
+        '\n'.join(notify_responses) if len(notify_responses) else NO_NEW_CLASSES)
 
 
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

@@ -55,7 +55,8 @@ def main() -> None:
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler('start', handlers.start))
     application.add_handler(CommandHandler('help', handlers.help_command))
-    application.add_handler(CommandHandler('events', handlers.events))
+    application.add_handler(
+        RolesHandler(CommandHandler('send_reminders', handlers.send_reminders), roles=roles.admins))
     application.add_handler(
         RolesHandler(CommandHandler('admin', handlers.admin), roles=roles.admins))
 
