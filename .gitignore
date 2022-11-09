@@ -1,4 +1,4 @@
 .idea
 venv
 .env
-credentials
+src/google_calendar/credentials
