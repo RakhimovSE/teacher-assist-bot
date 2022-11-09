@@ -14,7 +14,7 @@ class Event(BaseEvent):
 
     def init(self):
         self.args = self.__get_args()
-        self.locale = 'ru_RU' if self.args.get('locale', 'ru') else 'en'
+        self.locale = 'ru' if self.args.get('locale', 'ru') else 'en'
         self.is_informal = self.args.get('appeal') == 'informal'
 
     def __get_args(self):
