@@ -1,8 +1,8 @@
 import unittest
 from datetime import datetime
-from gcsa.event import Event
 
 from src.google_calendar import helpers
+from src.google_calendar.event import Event
 
 
 class GoogleCalendarTestCase(unittest.TestCase):
@@ -14,7 +14,6 @@ class GoogleCalendarTestCase(unittest.TestCase):
 
     def test_get_event_args(self):
         start = datetime(2022, 11, 9, 9, 0, 0)
-        event = Event("Test event", start)
 
         for description, args in [
             ('hello world', {}),
@@ -22,8 +21,8 @@ class GoogleCalendarTestCase(unittest.TestCase):
             ('line 1\nwrong key=281\nRIGHT_key=yo\n1wrong=key\n_right_key2=true\nline 2',
              {'RIGHT_key': 'yo', '_right_key2': 'true'}),
         ]:
-            event.description = description
-            self.assertEqual(helpers.get_args(event), args)
+            event = Event("Test event", start, description=description)
+            self.assertEqual(event.args, args)
 
 
 if __name__ == '__main__':

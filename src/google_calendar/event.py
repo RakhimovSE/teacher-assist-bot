@@ -30,8 +30,7 @@ class Event(BaseEvent):
     def is_upcoming(self):
         return (self.start - datetime.now(tz=pytz.utc)).total_seconds() > 0
 
-    @property
-    def reminder_text(self):
+    def get_reminder_text(self):
         event_tz = pytz.timezone(self.timezone)
         start_dt = self.start.replace(tzinfo=None).astimezone(event_tz)
         now = datetime.now(tz=pytz.utc)
