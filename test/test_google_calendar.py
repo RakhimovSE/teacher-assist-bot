@@ -23,7 +23,7 @@ class GoogleCalendarTestCase(unittest.TestCase):
              {'RIGHT_key': 'yo', '_right_key2': 'true'}),
         ]:
             event.description = description
-            self.assertEqual(helpers.get_event_args(event), args)
+            self.assertEqual(helpers.get_args(event), args)
 
 
 if __name__ == '__main__':

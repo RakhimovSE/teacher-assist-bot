@@ -8,7 +8,7 @@ def is_match(text, pattern=r'^[A-Za-z_][0-9A-Za-z_]*$'):
     return bool(re.search(pattern, text))
 
 
-def get_event_args(event: Event):
+def get_args(event: Event):
     args = {}
     lines = (event.description or '').split('\n')
     for line in lines:
