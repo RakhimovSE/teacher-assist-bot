@@ -9,7 +9,7 @@ from ptbcontrib.roles import BOT_DATA_KEY
 from datetime import datetime, timezone, timedelta
 from dateutil import parser
 
-from gcal import GCal
+from src.google_calendar.gcal import GCal
 
 gcal = GCal()
 
