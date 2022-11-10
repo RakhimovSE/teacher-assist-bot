@@ -4,7 +4,7 @@ import pytz
 from babel.dates import get_timezone_location, format_date, format_time, format_timedelta
 from gcsa.event import Event as BaseEvent
 
-from src.google_calendar.helpers import is_match
+from src.google_calendar.helpers import is_match, replace_tz
 
 
 class Event(BaseEvent):
@@ -16,6 +16,7 @@ class Event(BaseEvent):
         self.args = self.__get_args()
         self.locale = 'ru' if self.args.get('locale', 'ru') else 'en'
         self.is_informal = self.args.get('appeal') == 'informal'
+        self.tz = pytz.timezone(self.timezone)
 
     def __get_args(self):
         args = {}
@@ -28,11 +29,11 @@ class Event(BaseEvent):
 
     @property
     def is_upcoming(self):
-        return (self.start - datetime.now(tz=pytz.utc)).total_seconds() > 0
+        start_dt = replace_tz(self.start, self.tz)
+        return (start_dt - datetime.now(tz=self.tz)).total_seconds() > 0
 
     def get_reminder_text(self):
-        event_tz = pytz.timezone(self.timezone)
-        start_dt = self.start.replace(tzinfo=None).astimezone(event_tz)
+        start_dt = replace_tz(self.start, self.tz)
         now = datetime.now(tz=pytz.utc)
         day = format_timedelta(
             start_dt - now,
