@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token.
-    application = Application.builder().token(env['TG_TOKEN']).build()
+    application = Application.builder().token(env['TG_BOT_TOKEN']).build()
 
     roles = setup_roles(application)
     roles.add_admin([int(admin_id) for admin_id in env['TG_ADMIN_IDS'].split(',')])

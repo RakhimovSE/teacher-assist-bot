@@ -2,3 +2,4 @@
 venv
 .env
 src/google_calendar/credentials
+src/telegram/sessions
