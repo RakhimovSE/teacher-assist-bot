@@ -1,12 +1,8 @@
 from src.telegram import TelegramClient
-
-
-async def main():
-    me = await client.get_me()
-    print(me.stringify())
+from src.google_calendar import GoogleCalendar
 
 
 if __name__ == '__main__':
-    client = TelegramClient()
+    client = TelegramClient(GoogleCalendar())
     with client:
-        client.loop.run_until_complete(main())
+        client.loop.run_until_complete(client.send_event_reminders())

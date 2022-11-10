@@ -4,7 +4,7 @@ import pytz
 from gcsa.google_calendar import GoogleCalendar as BaseGoogleCalendar
 from dotenv import dotenv_values
 
-from src.google_calendar import Event
+from src.google_calendar.event import Event
 
 env = dotenv_values()
 
