@@ -1,8 +1,7 @@
 import unittest
 from datetime import datetime
 
-from src.google_calendar import helpers
-from src.google_calendar.event import Event
+from src.google_calendar import Event, helpers
 
 
 class GoogleCalendarTestCase(unittest.TestCase):
