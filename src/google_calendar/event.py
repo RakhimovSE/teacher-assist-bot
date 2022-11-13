@@ -10,6 +10,11 @@ from src.google_calendar.helpers import is_match, replace_tz
 class Event(BaseEvent):
     def __init__(self, *args, **kwargs):
         super(Event, self).__init__(*args, **kwargs)
+
+        self.args = {}
+        self.locale = 'ru'
+        self.is_informal = False
+        self.tz = pytz.utc
         self.init()
 
     def init(self):
