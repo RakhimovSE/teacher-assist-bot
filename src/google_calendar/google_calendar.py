@@ -12,7 +12,7 @@ env = dotenv_values()
 class GoogleCalendar(BaseGoogleCalendar):
     def __init__(self, *args, **kwargs):
         kwargs['default_calendar'] = kwargs.get('default_calendar', env['GCAL_ID'])
-        kwargs['credentials_path'] = kwargs.get('credentials_path', 'src/google_calendar/credentials/credentials.json')
+        kwargs['credentials_path'] = kwargs.get('credentials_path', env['GCAL_CREDS_PATH'])
         kwargs['read_only'] = kwargs.get('read_only', True)
         super(GoogleCalendar, self).__init__(*args, **kwargs)
 
