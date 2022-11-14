@@ -4,6 +4,7 @@ from telethon import TelegramClient as BaseTelegramClient
 from dotenv import dotenv_values
 
 from src.google_calendar import GoogleCalendar, Event
+from src.helpers import CONSOLE_ARGUMENTS
 
 env = dotenv_values()
 
@@ -28,7 +29,7 @@ class TelegramClient(BaseTelegramClient):
     async def send_event_reminder(self, event: Event):
         try:
             return await self.send_message(
-                int(event.args['telegram_id']),
+                int(event.args['telegram_id'] if not CONSOLE_ARGUMENTS.test else env['TG_TEST_ID']),
                 event.get_reminder_text()
             )
         except:
